@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -159,7 +160,7 @@ public abstract class SignBlockMixin extends BaseEntityBlock {
                                 BlockEntity be2 = world.getBlockEntity(new BlockPos(shop.getBlockPos().getX() + dir.getStepX(), shop.getBlockPos().getY(), shop.getBlockPos().getZ() + dir.getStepZ()));
                                 ((BaseContainerBlockEntityInterface)be2).diamondchestshop_setShop(true);
                             }
-                            player.displayClientMessage(new TextComponent("Created shop with " + quantity + " " + player.getOffhandItem().getItem().getDescription().getString() + (((nbt.getString("Text1")).contains("sell")) ? " sold for $" : " bought for $") + money), true);
+                            player.displayClientMessage(new TextComponent("Created shop with " + quantity + " " + new TranslatableComponent(player.getOffhandItem().getItem().getDescriptionId()).getString() + (((nbt.getString("Text1")).contains("sell")) ? " sold for $" : " bought for $") + money), true);
                         } else {
                             player.displayClientMessage(new TextComponent("Negative prices are not allowed"), true);
                         }
