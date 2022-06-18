@@ -10,10 +10,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -53,7 +54,7 @@ public class ServerPlayerGameModeMixin {
     private int gameTicks;
 
     @Inject(method = "destroyAndAck", at = @At("HEAD"), cancellable = true)
-    private void diamondchestshop_destroyAndAckMixin(BlockPos blockPos, int i, String string, CallbackInfo ci) {
+    private void diamondchestshop_destroyAndAckMixin(BlockPos blockPos, ServerboundPlayerActionPacket.Action action, String string, CallbackInfo ci) {
         if (DiamondChestShopConfig.getInstance().shopProtectPlayerBreak) {
             if (player.isCreative()) return;
             BlockEntity be = level.getBlockEntity(blockPos);
@@ -142,11 +143,11 @@ public class ServerPlayerGameModeMixin {
             Item sellItem = Registry.ITEM.get(ResourceLocation.tryParse(((BaseContainerBlockEntityInterface) shop).diamondchestshop_getItem()));
 
             if (dm.getBalanceFromUUID(player.getStringUUID()) < money) {
-                player.displayClientMessage(Component.literal("You don't have enough money"), true);
+                player.displayClientMessage(new TextComponent("You don't have enough money"), true);
                 return;
             }
             if (dm.getBalanceFromUUID(owner) + money >= Integer.MAX_VALUE && !((SignBlockEntityInterface) be).diamondchestshop_getAdminShop()) {
-                player.displayClientMessage(Component.literal("The owner is too rich"), true);
+                player.displayClientMessage(new TextComponent("The owner is too rich"), true);
                 return;
             }
 
@@ -167,7 +168,7 @@ public class ServerPlayerGameModeMixin {
                     }
                 }
                 if (itemCount < quantity) {
-                    player.displayClientMessage(Component.literal("The shop is sold out"), true);
+                    player.displayClientMessage(new TextComponent("The shop is sold out"), true);
                     return;
                 }
 
@@ -212,7 +213,7 @@ public class ServerPlayerGameModeMixin {
                 dm.setBalance(owner, dm.getBalanceFromUUID(owner) + money);
             }
 
-            player.displayClientMessage(Component.literal("Bought " + quantity1 + " " + sellItem.getDescription().getString() + " for $" + money), true);
+            player.displayClientMessage(new TextComponent("Bought " + quantity1 + " " + sellItem.getDescription().getString() + " for $" + money), true);
         } catch (NumberFormatException | CommandSyntaxException | NullPointerException ignored) {}
     }
 
@@ -228,12 +229,12 @@ public class ServerPlayerGameModeMixin {
             Item buyItem = Registry.ITEM.get(ResourceLocation.tryParse(((BaseContainerBlockEntityInterface) shop).diamondchestshop_getItem()));
 
             if (dm.getBalanceFromUUID(owner) < money && !((SignBlockEntityInterface) be).diamondchestshop_getAdminShop()) {
-                player.displayClientMessage(Component.literal("The owner hasn't got enough money"), true);
+                player.displayClientMessage(new TextComponent("The owner hasn't got enough money"), true);
                 return false;
             }
 
             if (dm.getBalanceFromUUID(player.getStringUUID()) + money >= Integer.MAX_VALUE) {
-                player.displayClientMessage(Component.literal("You are too rich"), true);
+                player.displayClientMessage(new TextComponent("You are too rich"), true);
                 return false;
             }
 
@@ -245,7 +246,7 @@ public class ServerPlayerGameModeMixin {
                 }
             }
             if (itemCount < quantity) {
-                player.displayClientMessage(Component.literal("You don't have enough of that item"), true);
+                player.displayClientMessage(new TextComponent("You don't have enough of that item"), true);
                 return false;
             }
             int emptySpaces = 0;
@@ -266,7 +267,7 @@ public class ServerPlayerGameModeMixin {
                 }
             }
             if (emptySpaces < quantity) {
-                player.displayClientMessage(Component.literal("The chest is full"), true);
+                player.displayClientMessage(new TextComponent("The chest is full"), true);
                 return false;
             }
 
@@ -315,7 +316,7 @@ public class ServerPlayerGameModeMixin {
                 dm.setBalance(owner, dm.getBalanceFromUUID(owner) - money);
             }
             dm.setBalance(player.getStringUUID(), dm.getBalanceFromUUID(player.getStringUUID()) + money);
-            player.displayClientMessage(Component.literal("Sold " + quantity + " " + buyItem.getDescription().getString() + " for $" + money), true);
+            player.displayClientMessage(new TextComponent("Sold " + quantity + " " + buyItem.getDescription().getString() + " for $" + money), true);
             return true;
         } catch (NumberFormatException | CommandSyntaxException | NullPointerException ignored) {
             return false;

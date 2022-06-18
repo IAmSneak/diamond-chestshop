@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 
@@ -21,7 +21,7 @@ public class DiamondChestShop implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ChestshopCommand.register(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> ChestshopCommand.register(dispatcher));
         DiamondUtils.registerTable("CREATE TABLE IF NOT EXISTS chestshop (id integer PRIMARY KEY AUTOINCREMENT, item text NOT NULL, nbt text NOT NULL);");
         AutoConfig.register(DiamondChestShopConfig.class, JanksonConfigSerializer::new);
     }

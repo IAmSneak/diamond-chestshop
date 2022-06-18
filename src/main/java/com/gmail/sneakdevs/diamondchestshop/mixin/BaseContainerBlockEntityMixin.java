@@ -6,7 +6,7 @@ import com.gmail.sneakdevs.diamondchestshop.interfaces.BaseContainerBlockEntityI
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -97,7 +97,7 @@ public abstract class BaseContainerBlockEntityMixin extends BlockEntity implemen
                     cir.setReturnValue(true);
                     return;
                 }
-                player.displayClientMessage(Component.literal("Cannot open another player's shop"), true);
+                player.displayClientMessage(new TextComponent("Cannot open another player's shop"), true);
                 cir.setReturnValue(false);
             }
         }

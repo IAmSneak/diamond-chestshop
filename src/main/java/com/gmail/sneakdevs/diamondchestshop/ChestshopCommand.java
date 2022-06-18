@@ -6,7 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 public class ChestshopCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -29,7 +29,7 @@ public class ChestshopCommand {
     }
 
     private static int chestshopCommand(CommandContext<CommandSourceStack> ctx) {
-        ctx.getSource().sendSuccess(Component.literal(
+        ctx.getSource().sendSuccess(new TextComponent(
                 "To create a chest shop: \n" +
                         "1) place a chest with a sign attached \n" +
                         "2) write \"buy\" or \"sell\" on the first line \n" +

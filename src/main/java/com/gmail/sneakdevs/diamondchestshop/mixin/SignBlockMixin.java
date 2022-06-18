@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -78,7 +78,7 @@ public abstract class SignBlockMixin extends BaseEntityBlock {
                 if (item.equals(Items.COMMAND_BLOCK)) {
                     ((SignBlockEntityInterface) be).diamondchestshop_setAdminShop(!((SignBlockEntityInterface) be).diamondchestshop_getAdminShop());
                     be.setChanged();
-                    player.displayClientMessage(Component.literal((((SignBlockEntityInterface) be).diamondchestshop_getAdminShop()) ? "Created admin shop" : "Removed admin shop"), true);
+                    player.displayClientMessage(new TextComponent((((SignBlockEntityInterface) be).diamondchestshop_getAdminShop()) ? "Created admin shop" : "Removed admin shop"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
@@ -87,38 +87,38 @@ public abstract class SignBlockMixin extends BaseEntityBlock {
             //create the chest shop
             if (item.equals(Registry.ITEM.get(ResourceLocation.tryParse(DiamondEconomyConfig.getInstance().currencies[0])))) {
                 if (nbt.getBoolean("diamondchestshop_IsShop")) {
-                    player.displayClientMessage(Component.literal("This is already a shop"), true);
+                    player.displayClientMessage(new TextComponent("This is already a shop"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
 
                 BlockPos hangingPos = pos.offset(state.getValue(HorizontalDirectionalBlock.FACING).getOpposite().getStepX(), state.getValue(HorizontalDirectionalBlock.FACING).getOpposite().getStepY(), state.getValue(HorizontalDirectionalBlock.FACING).getOpposite().getStepZ());
                 if (!(world.getBlockEntity(hangingPos) instanceof RandomizableContainerBlockEntity shop)) {
-                    player.displayClientMessage(Component.literal("Sign must be on a valid container"), true);
+                    player.displayClientMessage(new TextComponent("Sign must be on a valid container"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
 
                 if (!nbt.getString("diamondchestshop_ShopOwner").equals(player.getStringUUID()) || !((BaseContainerBlockEntityInterface)shop).diamondchestshop_getOwner().equals(player.getStringUUID())) {
-                    player.displayClientMessage(Component.literal("You must have placed down the sign and chest"), true);
+                    player.displayClientMessage(new TextComponent("You must have placed down the sign and chest"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
 
                 if (player.getOffhandItem().getItem().equals(Items.AIR)) {
-                    player.displayClientMessage(Component.literal("The sell item must be in your offhand"), true);
+                    player.displayClientMessage(new TextComponent("The sell item must be in your offhand"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
 
                 if (((BaseContainerBlockEntityInterface)shop).diamondchestshop_getShop()) {
-                    player.displayClientMessage(Component.literal("That chest already is a shop"), true);
+                    player.displayClientMessage(new TextComponent("That chest already is a shop"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
 
                 if (!nbt.getString("Text1").toLowerCase().contains("sell") && !nbt.getString("Text1").toLowerCase().contains("buy")) {
-                    player.displayClientMessage(Component.literal("The first line must be either \"Buy\" or \"Sell\""), true);
+                    player.displayClientMessage(new TextComponent("The first line must be either \"Buy\" or \"Sell\""), true);
                     cir.setReturnValue(InteractionResult.PASS);
                     return;
                 }
@@ -159,16 +159,16 @@ public abstract class SignBlockMixin extends BaseEntityBlock {
                                 BlockEntity be2 = world.getBlockEntity(new BlockPos(shop.getBlockPos().getX() + dir.getStepX(), shop.getBlockPos().getY(), shop.getBlockPos().getZ() + dir.getStepZ()));
                                 ((BaseContainerBlockEntityInterface)be2).diamondchestshop_setShop(true);
                             }
-                            player.displayClientMessage(Component.literal("Created shop with " + quantity + " " + player.getOffhandItem().getItem().getDescription().getString() + (((nbt.getString("Text1")).contains("sell")) ? " sold for $" : " bought for $") + money), true);
+                            player.displayClientMessage(new TextComponent("Created shop with " + quantity + " " + player.getOffhandItem().getItem().getDescription().getString() + (((nbt.getString("Text1")).contains("sell")) ? " sold for $" : " bought for $") + money), true);
                         } else {
-                            player.displayClientMessage(Component.literal("Negative prices are not allowed"), true);
+                            player.displayClientMessage(new TextComponent("Negative prices are not allowed"), true);
                         }
                     } else {
-                        player.displayClientMessage(Component.literal("Positive quantity required"), true);
+                        player.displayClientMessage(new TextComponent("Positive quantity required"), true);
                     }
                     cir.setReturnValue(InteractionResult.PASS);
                 } catch (NumberFormatException ignored) {
-                    player.displayClientMessage(Component.literal("The second and third lines must be numbers (quantity then money)"), true);
+                    player.displayClientMessage(new TextComponent("The second and third lines must be numbers (quantity then money)"), true);
                     cir.setReturnValue(InteractionResult.PASS);
                 }
             }
