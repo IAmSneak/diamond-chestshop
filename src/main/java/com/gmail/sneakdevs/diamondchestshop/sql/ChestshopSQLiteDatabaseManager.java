@@ -34,7 +34,6 @@ public class ChestshopSQLiteDatabaseManager implements ChestshopDatabaseManager 
             rs.next();
             return rs.getString(1);
         } catch (SQLException e) {
-            System.out.println(id);
             e.printStackTrace();
         }
         return null;
